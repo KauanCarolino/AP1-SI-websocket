@@ -39,11 +39,12 @@ async def send_messages():
     if not authenticated:
         return
 
-    async with websockets.connect("ws://192.168.3.13:7000") as socket:
+    async with websockets.connect("ws://localhost:8000") as socket:
         while True:
             msn = input("Digite uma mensagem para o servidor (ou 'sair' para encerrar): ")
 
             if msn.lower() == 'sair':
+                await socket.close()
                 break
 
             # Calcular o hash da mensagem
@@ -68,5 +69,6 @@ async def send_messages():
             await socket.send(ciphertext)
             print(await socket.recv())
 
-if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(send_messages())
+asyncio.get_event_loop().run_until_complete(send_messages())
+asyncio.get_event_loop().run_forever()
+
